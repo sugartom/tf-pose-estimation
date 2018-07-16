@@ -1,0 +1,4 @@
+# image
+python run.py --resize 656x368 --image=/home/yitao/Documents/fun-project/devicehive-video-analysis/1.png
+# video
+python run_video.py --video=/home/yitao/Documents/fun-project/actions_demo/videos/indoor_two_ppl.avi

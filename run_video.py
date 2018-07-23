@@ -21,7 +21,7 @@ fps_time = 0
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='tf-pose-estimation Video')
-    parser.add_argument('--video', type=str, default='')
+    parser.add_argument('--video', type=str, default='/home/yitao/Documents/fun-project/actions_demo/videos/indoor_two_ppl.avi')
     parser.add_argument('--resolution', type=str, default='432x368', help='network input resolution. default=432x368')
     parser.add_argument('--model', type=str, default='cmu', help='cmu / mobilenet_thin')
     parser.add_argument('--show-process', type=bool, default=False,

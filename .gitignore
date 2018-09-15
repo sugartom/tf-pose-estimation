@@ -120,3 +120,4 @@ src/pafprocess/pafprocess_wrap.cpp
 src/pafprocess/pafprocess_wrap.cxx
 
 tf_openpose/*
+tf_openpose_new/*

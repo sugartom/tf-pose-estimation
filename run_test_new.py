@@ -9,20 +9,20 @@ import numpy as np
 from tf_pose.estimator import TfPoseEstimator
 from tf_pose.networks import get_graph_path, model_wh
 
-# # Yitao-TLS-Begin
-# import tensorflow as tf
-# import os
-# import sys
-# from tensorflow.python.saved_model import builder as saved_model_builder
-# from tensorflow.python.saved_model import signature_constants
-# from tensorflow.python.saved_model import signature_def_utils
-# from tensorflow.python.saved_model import tag_constants
-# from tensorflow.python.saved_model import utils
-# from tensorflow.python.util import compat
+# Yitao-TLS-Begin
+import tensorflow as tf
+import os
+import sys
+from tensorflow.python.saved_model import builder as saved_model_builder
+from tensorflow.python.saved_model import signature_constants
+from tensorflow.python.saved_model import signature_def_utils
+from tensorflow.python.saved_model import tag_constants
+from tensorflow.python.saved_model import utils
+from tensorflow.python.util import compat
 
-# tf.app.flags.DEFINE_integer('model_version', 1, 'version number of the model.')
-# FLAGS = tf.app.flags.FLAGS
-# # Yitao-TLS-End
+tf.app.flags.DEFINE_integer('model_version', 1, 'version number of the model.')
+FLAGS = tf.app.flags.FLAGS
+# Yitao-TLS-End
 
 logger = logging.getLogger('TfPoseEstimator')
 logger.setLevel(logging.DEBUG)
@@ -52,7 +52,7 @@ if __name__ == '__main__':
         e = TfPoseEstimator(get_graph_path(args.model), target_size=(w, h))
 
 
-    iteration_list = [15, 1, 10]
+    iteration_list = [1]
     for iteration in iteration_list:
         start = time.time()
         for i in range(iteration):
@@ -74,41 +74,43 @@ if __name__ == '__main__':
 
 
 
-    # # Yitao-TLS-Begin
-    # export_path_base = "tf_openpose"
-    # export_path = os.path.join(
-    #     compat.as_bytes(export_path_base),
-    #     compat.as_bytes(str(FLAGS.model_version)))
-    # print('Exporting trained model to %s' % str(export_path))
-    # builder = saved_model_builder.SavedModelBuilder(export_path)
+    # Yitao-TLS-Begin
+    export_path_base = "tf_openpose_new"
+    export_path = os.path.join(
+        compat.as_bytes(export_path_base),
+        compat.as_bytes(str(FLAGS.model_version)))
+    print('Exporting trained model to %s' % str(export_path))
+    builder = saved_model_builder.SavedModelBuilder(export_path)
 
-    # tensor_info_x1 = tf.saved_model.utils.build_tensor_info(e.tensor_image)
-    # tensor_info_x2 = tf.saved_model.utils.build_tensor_info(e.upsample_size)
+    tensor_info_x1 = tf.saved_model.utils.build_tensor_info(e.tensor_image)
+    tensor_info_x2 = tf.saved_model.utils.build_tensor_info(e.upsample_size)
+    tensor_info_y = tf.saved_model.utils.build_tensor_info(e.tensor_output)
     # tensor_info_y1 = tf.saved_model.utils.build_tensor_info(e.tensor_peaks)
     # tensor_info_y2 = tf.saved_model.utils.build_tensor_info(e.tensor_heatMat_up)
     # tensor_info_y3 = tf.saved_model.utils.build_tensor_info(e.tensor_pafMat_up)
 
-    # prediction_signature = tf.saved_model.signature_def_utils.build_signature_def(
-    #     inputs={'tensor_image': tensor_info_x1,
-    #                 'upsample_size': tensor_info_x2},
-    #     outputs={'tensor_peaks': tensor_info_y1,
-    #                 'tensor_heatMat_up': tensor_info_y2,
-    #                 'tensor_pafMat_up': tensor_info_y3},
-    #     method_name=tf.saved_model.signature_constants.PREDICT_METHOD_NAME)
+    prediction_signature = tf.saved_model.signature_def_utils.build_signature_def(
+        inputs={'tensor_image': tensor_info_x1,
+                    'upsample_size': tensor_info_x2},
+        outputs = {'tensor_output': tensor_info_y},
+        # outputs={'tensor_peaks': tensor_info_y1,
+                    # 'tensor_heatMat_up': tensor_info_y2,
+                    # 'tensor_pafMat_up': tensor_info_y3},
+        method_name=tf.saved_model.signature_constants.PREDICT_METHOD_NAME)
 
-    # legacy_init_op = tf.group(tf.tables_initializer(), name='legacy_init_op')
-    # builder.add_meta_graph_and_variables(
-    #     e.persistent_sess, [tf.saved_model.tag_constants.SERVING],
-    #     signature_def_map={
-    #       'predict_images':
-    #         prediction_signature,
-    #     },
-    #     legacy_init_op=legacy_init_op)
+    legacy_init_op = tf.group(tf.tables_initializer(), name='legacy_init_op')
+    builder.add_meta_graph_and_variables(
+        e.persistent_sess, [tf.saved_model.tag_constants.SERVING],
+        signature_def_map={
+          'predict_images':
+            prediction_signature,
+        },
+        legacy_init_op=legacy_init_op)
 
-    # builder.save()
+    builder.save()
 
-    # print('Done exporting!')
-    # # Yitao-TLS-End
+    print('Done exporting!')
+    # Yitao-TLS-End
 
 
 

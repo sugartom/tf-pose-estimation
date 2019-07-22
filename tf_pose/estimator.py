@@ -528,14 +528,14 @@ class TfPoseEstimator:
                 self.tensor_image: [img], self.upsample_size: upsample_size
             })
 
-        print(img.shape)
-        print(upsample_size)
-        print(self.tensor_peaks)
-        print(self.tensor_heatMat_up)
-        print(self.tensor_pafMat_up)
-        print(peaks[0,115,107,:])
-        print(heatMat_up.shape)
-        print(pafMat_up.shape)
+        # print(img.shape)
+        # print(upsample_size)
+        # print(self.tensor_peaks)
+        # print(self.tensor_heatMat_up)
+        # print(self.tensor_pafMat_up)
+        # print(peaks[0,115,107,:])
+        # print(heatMat_up.shape)
+        # print(pafMat_up.shape)
 
         peaks = peaks[0]
         self.heatMat = heatMat_up[0]

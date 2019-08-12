@@ -1,4 +1,4 @@
-tensorflow_model_server --port=8500 --model_name=tf_openpose --model_base_path=/home/yitao/Documents/fun-project/tensorflow-related/tf-pose-estimation/tf_openpose
+tensorflow_model_server --port=8500 --model_name=tf_openpose --model_base_path=/home/yitao/Documents/fun-project/tensorflow-related/tf-pose-estimation/tf_openpose >out-001 2>&1
 
 python run_test_client.py
 python run_test_export.py

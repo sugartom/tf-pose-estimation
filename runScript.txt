@@ -1,6 +1,20 @@
+# start server docker
+docker run --runtime=nvidia -it -p 8500:8500 --name container-serving -v /home/yitao/Downloads/tmp/docker-share:/tmp/docker-share sugartom/edge-publish:openpose
+docker run --gpus all -it -p 8500:8500 --name container-serving -v /home/yitao/Downloads/tmp/docker-share:/tmp/docker-share sugartom/edge-publish:openpose
+
+# start client docker
+docker run --runtime=nvidia -it --name container-client -v /home/yitao/Downloads/tmp/docker-share:/tmp/docker-share sugartom/edge-publish:openpose
+docker run --gpus all -it --name container-client -v /home/yitao/Downloads/tmp/docker-share:/tmp/docker-share sugartom/edge-publish:openpose
+
+# run server locally
 tensorflow_model_server --port=8500 --model_name=tf_openpose --model_base_path=/home/yitao/Documents/fun-project/tensorflow-related/tf-pose-estimation/tf_openpose >out-001 2>&1
 
+# run server in docker
+tensorflow_model_server --port=8500 --model_name=tf_openpose --model_base_path=/tmp/docker-share/tf_openpose >out-001 2>&1
+
+# run client locally and in docker
 python tomtest/client_test.py
+python tomtest/client_test.py --server 192.168.1.32:8500
 
 ======================= Archive =======================
 # image

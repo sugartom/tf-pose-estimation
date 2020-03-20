@@ -1,4 +1,5 @@
 tensorflow_model_server --port=8500 --model_name=pose_openpose --model_base_path=/home/yitao/Documents/fun-project/tensorflow-related/tf-pose-estimation/exported_models/pose_openpose >out-001 2>&1
+tensorflow_model_server --port=8500 --model_name=pose_thinpose --model_base_path=/home/yitao/Documents/fun-project/tensorflow-related/tf-pose-estimation/exported_models/pose_thinpose >out-001 2>&1
 python tomTest/pose_measure.py
 
 ======================= Archive =======================
@@ -8,7 +9,7 @@ tensorflow_model_server --port=8500 --model_name=tf_openpose --model_base_path=/
 python tomtest/client_test.py
 
 # image
-python run.py --resize 656x368 --image=/home/yitao/Documents/fun-project/devicehive-video-analysis/1.png
+python run.py --resize 656x368
 # video
 python run_video.py --video=/home/yitao/Documents/fun-project/actions_demo/videos/indoor_two_ppl.avi
 

@@ -27,28 +27,32 @@ if __name__ == '__main__':
 
     image_path = '/home/yitao/Documents/fun-project/tensorflow-related/tf-pose-estimation/images/p1.jpg'
     resize_out_ratio = 4.0
-    model_name = 'cmu'
+    # model_name = 'cmu'
+    model_name = "mobilenet_thin"
 
     e = TfPoseEstimator(get_graph_path(model_name), target_size=(432, 368))
     
-    iteration_list = [1]
+    iteration_list = [10]
     for iteration in iteration_list:
-        start = time.time()
         for i in range(iteration):
+            start = time.time()
             # estimate human poses from a single image !
             image = common.read_imgfile(image_path, None, None)
-            print("image shape = %s" % str(image.shape))
+            # print("image shape = %s" % str(image.shape))
             if image is None:
                 sys.exit(-1)
             t = time.time()
             humans = e.inference(image, resize_to_default=False, upsample_size=resize_out_ratio)
             elapsed = time.time() - t
 
-        end = time.time()
-        print("It takes %s sec to run %d images for tf-openpose" % (str(end - start), iteration))
+            end = time.time()
+            print("It takes %s sec to run" % (str(end - start)))
 
     # Yitao-TLS-Begin
-    export_path_base = "tf_openpose"
+    if (model_name == "cmu"):
+        export_path_base = "pose_openpose"
+    else:
+        export_path_base = "pose_thinpose"
     export_path = os.path.join(
         compat.as_bytes(export_path_base),
         compat.as_bytes(str(FLAGS.model_version)))

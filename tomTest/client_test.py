@@ -54,7 +54,7 @@ def main(_):
   image_path = '/home/yitao/Documents/fun-project/tensorflow-related/tf-pose-estimation/images/p1.jpg'
   resize_out_ratio = 4.0
   
-  runNum = 105
+  runNum = 15
   humans = None
   durationSum = 0.0
   runCount = 0
@@ -64,6 +64,8 @@ def main(_):
 
     image = common.read_imgfile(image_path, None, None)
     upsample_size = [int(image.shape[0] / 8 * resize_out_ratio), int(image.shape[1] / 8 * resize_out_ratio)]
+
+    # print(upsample_size)
 
     request.inputs['tensor_image'].CopyFrom(
       tf.contrib.util.make_tensor_proto(image, shape = [1, 232, 217, 3], dtype=np.float32))

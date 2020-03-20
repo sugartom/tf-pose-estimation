@@ -16,12 +16,13 @@ if __name__ == '__main__':
 
     e = TfPoseEstimator(get_graph_path(model_name), target_size=(432, 368))
     
-    iteration_list = [1]
+    iteration_list = [10]
     for iteration in iteration_list:
         start = time.time()
         for i in range(iteration):
             # estimate human poses from a single image !
-            image = common.read_imgfile(image_path, None, None)
+            # image = common.read_imgfile(image_path, None, None)
+            image = cv2.imread(image_path)
             print("image shape = %s" % str(image.shape))
             if image is None:
                 sys.exit(-1)

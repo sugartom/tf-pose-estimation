@@ -1,8 +1,12 @@
+tensorflow_model_server --port=8500 --model_name=pose_openpose --model_base_path=/home/yitao/Documents/fun-project/tensorflow-related/tf-pose-estimation/tf_openpose >out-001 2>&1
+python tomTest/pose_measure.py
+
+======================= Archive =======================
+
 tensorflow_model_server --port=8500 --model_name=tf_openpose --model_base_path=/home/yitao/Documents/fun-project/tensorflow-related/tf-pose-estimation/tf_openpose >out-001 2>&1
 
 python tomtest/client_test.py
 
-======================= Archive =======================
 # image
 python run.py --resize 656x368 --image=/home/yitao/Documents/fun-project/devicehive-video-analysis/1.png
 # video

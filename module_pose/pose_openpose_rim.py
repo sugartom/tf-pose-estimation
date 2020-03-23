@@ -21,6 +21,7 @@ class PoseOpenpose:
     else:
       self.image = request["client_input"]
 
+    self.image = cv2.resize(self.image, (217, 232))
     self.istub = istub
 
   def Apply(self):
@@ -60,10 +61,10 @@ class PoseOpenpose:
       next_request = predict_pb2.PredictRequest()
       # next_request.inputs["client_input"].CopyFrom(
       #   tf.make_tensor_proto(self.image))
-      next_request.inputs["FINAL"].CopyFrom(
+      next_request.inputs["humans"].CopyFrom(
         tf.make_tensor_proto(pickle.dumps(self.humans)))
     else:
       next_request = dict()
       # next_request["client_input"] = self.image
-      next_request["FINAL"] = self.humans
+      next_request["humans"] = self.humans
     return next_request

@@ -25,8 +25,8 @@ thinpose.Setup()
 ichannel = grpc.insecure_channel("localhost:8500")
 istub = prediction_service_pb2_grpc.PredictionServiceStub(ichannel)
 
-# measure_module = "pose_openpose"
-measure_module = "pose_thinpose"
+measure_module = "pose_openpose"
+# measure_module = "pose_thinpose"
 
 image_path = '/home/yitao/Documents/fun-project/tensorflow-related/tf-pose-estimation/images/p1.jpg'
 frame_id = 0

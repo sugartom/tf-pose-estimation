@@ -125,3 +125,4 @@ tf_openpose.tar.gz
 out-*
 exported_models
 models
+pickle_tmp

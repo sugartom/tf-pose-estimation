@@ -124,3 +124,4 @@ tf_openpose_new/*
 tf_openpose.tar.gz
 out-*
 exported_models
+models

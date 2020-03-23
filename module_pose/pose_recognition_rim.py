@@ -3,6 +3,7 @@ from multi_classifier import MultiPersonClassifier
 
 import pickle
 import tensorflow as tf
+from tensorflow_serving.apis import predict_pb2
 
 class PoseRecognition:
 

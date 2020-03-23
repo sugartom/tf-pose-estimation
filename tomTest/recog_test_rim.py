@@ -1,5 +1,6 @@
 import grpc
 from tensorflow_serving.apis import prediction_service_pb2_grpc
+import pickle
 
 import sys
 sys.path.append('/home/yitao/Documents/fun-project/tensorflow-related/tf-pose-estimation/')
@@ -25,7 +26,7 @@ sess_id = "chain_pose-000"
 
 frame_id = 1
 
-while (frame_id < 32):
+while (frame_id < 48):
   print("Processing %dth image" % frame_id)
 
   _, image = image_reader.read()
@@ -36,6 +37,12 @@ while (frame_id < 32):
   pose.Apply()
   next_request = pose.PostProcess(False)
   # print(next_request["humans"])
+
+  # if (frame_id == 32):
+  #   if (True):
+  #     pickle_output = "/home/yitao/Downloads/tmp/docker-share/pickle_tmp_combined/tf-pose-estimation/pickle_tmp/pose_openpose/%s" % (str(frame_id).zfill(3))
+  #     with open(pickle_output, 'w') as f:
+  #        pickle.dump(next_request, f)
 
   recog.PreProcess(next_request, istub, False)
   recog.Apply()

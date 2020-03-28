@@ -21,6 +21,7 @@ class PoseThinpose:
     else:
       self.image = request["client_input"]
 
+    self.image = cv2.resize(self.image, (217, 232))
     self.istub = istub
 
   def Apply(self):

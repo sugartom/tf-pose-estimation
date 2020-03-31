@@ -16,7 +16,7 @@ import numpy as np
 import sys
 import os
 import pickle
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 from collections import deque
 import cv2

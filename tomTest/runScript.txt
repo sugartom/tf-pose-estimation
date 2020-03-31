@@ -1,10 +1,24 @@
+# installation
+- step 1: get trained model
+	get trained model (module_pose.tar.gz) from https://drive.google.com/file/d/1hEgmmUGvpJmkgWnn56gAaOYvIH-YRRJJ/view?usp=sharing
+	unzip module_pose.tar.gz, and put "exported_models" and "models" under root directory "tf-pose-estimation"
+- step 2: build c++ library
+	cd tf_pose/pafprocess
+	swig -python -c++ pafprocess.i && python setup.py build_ext --inplace
+- step 3: verify installation
+	python run.py
+	(You should see Openpose output window)
+
 # tf
+cd tomTest
 python recog_test_tf.py
 
 # serving
+cd tomTest
 tensorflow_model_server --port=8500 --model_name=pose_openpose --model_base_path=/home/yitao/Documents/fun-project/tensorflow-related/tf-pose-estimation/exported_models/pose_openpose >out-001 2>&1
 python recog_test_serving.py
 
 # rim
+cd tomTest
 tensorflow_model_server --port=8500 --model_name=pose_openpose --model_base_path=/home/yitao/Documents/fun-project/tensorflow-related/tf-pose-estimation/exported_models/pose_openpose >out-001 2>&1
 python recog_test_rim.py

@@ -1,10 +1,12 @@
 import grpc
 from tensorflow_serving.apis import prediction_service_pb2_grpc
 import pickle
+import time
 
 import sys
 sys.path.append('/home/yitao/Documents/fun-project/tensorflow-related/tf-pose-estimation/')
 from module_pose.pose_openpose_rim import PoseOpenpose
+from module_pose.pose_thinpose_rim import PoseThinpose
 from module_pose.pose_recognition_rim import PoseRecognition
 
 import cv2
@@ -16,6 +18,11 @@ istub = prediction_service_pb2_grpc.PredictionServiceStub(ichannel)
 pose = PoseOpenpose()
 pose.Setup()
 
+thin = PoseThinpose()
+thin.Setup()
+
+first = thin
+
 recog = PoseRecognition()
 recog.Setup()
 
@@ -26,16 +33,20 @@ sess_id = "chain_pose-000"
 
 frame_id = 1
 
-while (frame_id < 48):
-  print("Processing %dth image" % frame_id)
+total = 0.0
+count = 0
+
+while (frame_id < 120):
+  # print("Processing %dth image" % frame_id)
+  start = time.time()
 
   _, image = image_reader.read()
   request = dict()
   request["client_input"] = image
 
-  pose.PreProcess(request, istub, False)
-  pose.Apply()
-  next_request = pose.PostProcess(False)
+  first.PreProcess(request, istub, False)
+  first.Apply()
+  next_request = first.PostProcess(False)
   # print(next_request["humans"])
 
   # if (frame_id == 32):
@@ -48,6 +59,16 @@ while (frame_id < 48):
   recog.Apply()
   next_request = recog.PostProcess(False)
 
-  print(next_request["FINAL"])
+  # print(next_request["FINAL"])
+
+  end = time.time()
+
+  duration = end - start
+  print("duration = %f" % duration)
+  if (frame_id > 5):
+    count += 1
+    total += duration
 
   frame_id += 1
+
+print("on average, it takes %f sec per frame" % (total / count))

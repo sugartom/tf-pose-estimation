@@ -21,4 +21,5 @@ python recog_test_serving.py
 # rim
 cd tomTest
 tensorflow_model_server --port=8500 --model_name=pose_openpose --model_base_path=/home/yitao/Documents/fun-project/tensorflow-related/tf-pose-estimation/exported_models/pose_openpose >out-001 2>&1
+tensorflow_model_server --port=8500 --model_name=pose_thinpose --model_base_path=/home/yitao/Documents/fun-project/tensorflow-related/tf-pose-estimation/exported_models/pose_thinpose >out-001 2>&1
 python recog_test_rim.py

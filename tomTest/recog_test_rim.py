@@ -21,7 +21,7 @@ pose.Setup()
 thin = PoseThinpose()
 thin.Setup()
 
-first = thin
+first = pose
 
 recog = PoseRecognition()
 recog.Setup()
@@ -31,13 +31,16 @@ route_table = simple_route_table
 
 sess_id = "chain_pose-000"
 
-frame_id = 1
+frame_id = 0
 
 total = 0.0
 count = 0
 
-while (frame_id < 120):
+while (frame_id < 8):
   # print("Processing %dth image" % frame_id)
+
+  frame_id += 1
+
   start = time.time()
 
   _, image = image_reader.read()
@@ -47,7 +50,9 @@ while (frame_id < 120):
   first.PreProcess(request, istub, False)
   first.Apply()
   next_request = first.PostProcess(False)
-  # print(next_request["humans"])
+  print(next_request["humans"])
+
+  continue
 
   # if (frame_id == 32):
   #   if (True):
@@ -59,7 +64,7 @@ while (frame_id < 120):
   recog.Apply()
   next_request = recog.PostProcess(False)
 
-  # print(next_request["FINAL"])
+  print(next_request["FINAL"])
 
   end = time.time()
 
@@ -68,7 +73,5 @@ while (frame_id < 120):
   if (frame_id > 5):
     count += 1
     total += duration
-
-  frame_id += 1
 
 print("on average, it takes %f sec per frame" % (total / count))

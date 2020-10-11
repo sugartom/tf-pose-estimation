@@ -34,7 +34,8 @@ class PoseOpenpose:
     image = cv2.resize(image, (217, 232))
     upsample_size = [int(image.shape[0] / 8 * PoseOpenpose.resize_out_ratio), int(image.shape[1] / 8 * PoseOpenpose.resize_out_ratio)]
 
-    data_dict["client_input"] = image
+    # data_dict["client_input"] = image
+    data_dict["client_input"] = np.expand_dims(image, axis = 0).astype(np.float32)
     data_dict["upsample_size"] = upsample_size
 
     return data_dict
@@ -51,12 +52,9 @@ class PoseOpenpose:
       batched_data_dict = dict()
 
       # for each key in data_array[0], convert it to batched_data_dict[key][]
-      if (batch_size == 1):
-        batched_data_dict["client_input"] = [data_array[0]["client_input"]]
-      else:
-        batched_data_dict["client_input"] = data_array[0]["client_input"]
-        for data in data_array[1:]:
-          batched_data_dict["client_input"] = np.append(batched_data_dict["client_input"], data["client_input"], axis = 0)
+      batched_data_dict["client_input"] = data_array[0]["client_input"]
+      for data in data_array[1:]:
+        batched_data_dict["client_input"] = np.append(batched_data_dict["client_input"], data["client_input"], axis = 0)
       
       batched_data_dict["upsample_size"] = []
       for data in data_array:
@@ -67,7 +65,7 @@ class PoseOpenpose:
   # input: batched_data_dict = {"image": [image1, image2], "meta": [meta1, meta2]}
   # output: batched_result_dict = {"bounding_boxes": [[bb1_in_image1, bb2_in_image1], [bb1_in_image2]]}
   def Apply(self, batched_data_dict, batch_size, istub):
-    if (batch_size != len(batched_data_dict[batched_data_dict.keys()[0]])):
+    if (batch_size != len(batched_data_dict["upsample_size"])):
       print("[Error] Apply() batch size not matched...")
       return None
     else:
@@ -77,9 +75,9 @@ class PoseOpenpose:
       request.model_spec.name = 'pose_openpose'
       request.model_spec.signature_name = 'predict_images'
       request.inputs['tensor_image'].CopyFrom(
-        tf.contrib.util.make_tensor_proto(batched_data_dict["client_input"][0], shape = [1, 232, 217, 3], dtype=np.float32))
+        tf.contrib.util.make_tensor_proto(batched_data_dict["client_input"], shape = batched_data_dict["client_input"].shape))
       request.inputs['upsample_size'].CopyFrom(
-        tf.contrib.util.make_tensor_proto(batched_data_dict["upsample_size"][0], shape = [2], dtype=np.int32))
+        tf.contrib.util.make_tensor_proto(batched_data_dict["upsample_size"][0], shape = [2], dtype = np.int32))
 
       result = istub.Predict(request, 10.0)  # 10 secs timeout
 
@@ -87,20 +85,25 @@ class PoseOpenpose:
       tensor_pafMat_up = tensor_util.MakeNdarray(result.outputs['tensor_pafMat_up'])
       tensor_peaks = tensor_util.MakeNdarray(result.outputs['tensor_peaks'])
 
-      peaks = tensor_peaks[0]
-      heatMat = tensor_heatMat_up[0]
-      pafMat = tensor_pafMat_up[0]
+      # print(tensor_heatMat_up.shape)
 
-      humans = PoseEstimator.estimate_paf(peaks, heatMat, pafMat)
+      humans_array = []
+      for i in range(batch_size):
+        peaks = tensor_peaks[i]
+        heatMat = tensor_heatMat_up[i]
+        pafMat = tensor_pafMat_up[i]
 
-      batched_result_dict["humans"] = [humans]
+        humans = PoseEstimator.estimate_paf(peaks, heatMat, pafMat)
+        humans_array.append(humans)
+
+      batched_result_dict["humans"] = humans_array
 
       return batched_result_dict
 
   # input: batched_result_dict = {"bounding_boxes": [[bb1_in_image1, bb2_in_image1], [bb1_in_image2]]}
   # output: batched_result_array = [{"bounding_boxes": [bb1_in_image1, bb2_in_image1]}, {"bounding_boxes": [bb1_in_image2]}]
   def GetBatchedResultArray(self, batched_result_dict, batch_size):
-    if (batch_size != len(batched_result_dict[batched_result_dict.keys()[0]])):
+    if (batch_size != len(batched_result_dict["humans"])):
       print("[Error] GetBatchedResultArray() batch size not matched...")
       return None
     else:

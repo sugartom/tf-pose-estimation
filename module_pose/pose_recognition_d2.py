@@ -115,9 +115,11 @@ class PoseRecognition:
       output_label = ""
 
       if (len(dict_id2skeleton)):
+        my_lock.acquire()
         dict_id2label = PoseRecognition.multiperson_classifier.classify(dict_id2skeleton)
         min_id = min(dict_id2skeleton.keys())
         output_label = dict_id2label[min_id]
+        my_lock.release()
 
       batched_result_dict["output_label"] = [output_label]
 
